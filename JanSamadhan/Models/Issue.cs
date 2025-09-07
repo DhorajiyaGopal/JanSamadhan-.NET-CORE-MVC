@@ -27,5 +27,6 @@ namespace JanSamadhan.Models
         public User User { get; set; }
         public int UserId { get; set; }
         public ICollection<Reply> Replies { get; set; }
+
     }
 }

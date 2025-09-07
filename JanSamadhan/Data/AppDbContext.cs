@@ -10,6 +10,9 @@ namespace JanSamadhan.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Issue> Issues { get; set; }
 
+        public DbSet<McpOfficer> McpOfficers { get; set; }
+
+        public DbSet<Reply> Replies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -19,6 +22,14 @@ namespace JanSamadhan.Data
                 .WithMany(u => u.Issues)
                 .HasForeignKey(i => i.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Issue>()
+                .HasMany(i => i.Replies)
+                .WithOne(r => r.Issue)
+                .HasForeignKey(r => r.IssueId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
 
     }

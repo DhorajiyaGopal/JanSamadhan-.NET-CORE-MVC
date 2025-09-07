@@ -26,5 +26,9 @@ namespace JanSamadhan.Models
         [Required(ErrorMessage = "Officer Id is required")]
         public int McpOfficerId { get; set; }
         public McpOfficer McpOfficer { get; set; }
+
+        [Required(ErrorMessage = "Issue Id is required")]
+        public int IssueId { get; set; }
+        public Issue Issue { get; set; }
     }
 }

@@ -28,8 +28,6 @@ namespace JanSamadhan.Data
                 .WithOne(r => r.Issue)
                 .HasForeignKey(r => r.IssueId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
         }
 
     }

@@ -21,7 +21,7 @@ namespace JanSamadhan.Models
         public DateTime LastUpdatedAt { get; set; } = DateTime.Now;
 
 
-        public List<string> AttachImages { get; set; }
+        public string AttachImage { get; set; }
 
         [Required(ErrorMessage = "Officer Id is required")]
         public int McpOfficerId { get; set; }

@@ -23,9 +23,10 @@ namespace JanSamadhan.Models
         [DataType(DataType.DateTime)]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public IList<string> RelatedImageUrl { get; set; } = new List<string>();
-        public ICollection<Reply> Replies { get; set; }
+        public string RelatedImageUrl { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
+        public ICollection<Reply> Replies { get; set; }
+
     }
 }

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using JanSamadhan.Data;
+using JanSamadhan.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JanSamadhan
 {
@@ -24,6 +27,11 @@ namespace JanSamadhan
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContextPool<AppDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DbUrl")));
+            services.AddScoped<IUser, UserRepo>();
+            services.AddScoped<IIssue, IssueRepo>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

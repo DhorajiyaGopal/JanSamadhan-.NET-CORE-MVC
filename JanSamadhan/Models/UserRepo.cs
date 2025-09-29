@@ -8,7 +8,7 @@ namespace JanSamadhan.Models
     {
         private readonly AppDbContext _context;
 
-        public IUserRepo(AppDbContext context)
+        public UserRepo(AppDbContext context)
         {
             _context = context;
         }

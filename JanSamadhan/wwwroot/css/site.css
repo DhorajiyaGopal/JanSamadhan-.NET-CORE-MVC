@@ -1,71 +1,121 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa; /* Light grey background */
 }
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+.container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-top: 2rem;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* Navbar */
+.navbar-brand {
+    font-weight: 500;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.nav-link {
+    font-weight: 500;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* Card Styles */
+.card {
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    font-weight: 500;
+}
+
+/* Button Styles */
+.btn {
+    font-weight: 500;
+    border-radius: 0.25rem;
+}
+
+/* Footer */
 html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    margin-bottom: 80px; /* Margin bottom by footer height */
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+    background-color: #ffffff;
+    padding: 10px 0;
+    text-align: center;
+    border-top: 1px solid #e5e5e5;
+}
+
+.reply-body img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover; /* This is the key */
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.reply-body img:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Image Lightbox Modal Styles */
+.image-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1050; /* High z-index to be on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.image-modal-content {
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.image-modal-close:hover,
+.image-modal-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
 }

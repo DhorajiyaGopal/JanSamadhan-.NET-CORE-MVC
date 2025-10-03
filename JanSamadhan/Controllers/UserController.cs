@@ -91,6 +91,8 @@ namespace JanSamadhan.Controllers
                     return View(model);
                 }
 
+                HttpContext.Session.Remove("OfficerId");
+                HttpContext.Session.Remove("OfficerName");
                 HttpContext.Session.SetInt32("UserId", user.Id);
 
                 return RedirectToAction("Dashboard");

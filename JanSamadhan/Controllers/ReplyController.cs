@@ -70,7 +70,7 @@ namespace JanSamadhan.Controllers
 
                 _replyRepo.Add(newReply);
 
-                return RedirectToAction("Index"); 
+                return RedirectToAction("ComplaintDetails", "McpOfficer", new { id = model.IssueId });
             }
 
             return View(model);
@@ -138,7 +138,7 @@ namespace JanSamadhan.Controllers
 
 
             _replyRepo.Update(reply);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("ComplaintDetails", "McpOfficer", new { id = reply.IssueId });
         }
 
         public IActionResult Delete(int id)

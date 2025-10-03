@@ -8,10 +8,12 @@ namespace JanSamadhan.Controllers
     public class McpOfficerController : Controller
     {
         private readonly IMcpOfficer _mcpOfficerRepo;
+        private readonly IIssue _issueRepo;
 
-        public McpOfficerController(IMcpOfficer mcpOfficerRepo)
+        public McpOfficerController(IMcpOfficer mcpOfficerRepo, IIssue issueRepo)
         {
             _mcpOfficerRepo = mcpOfficerRepo;
+            _issueRepo = issueRepo;
         }
 
         public IActionResult Index()
@@ -84,7 +86,10 @@ namespace JanSamadhan.Controllers
                     return View(model);
                 }
 
+                HttpContext.Session.Remove("UserId");
                 HttpContext.Session.SetInt32("OfficerId", officer.Id);
+                HttpContext.Session.SetString("OfficerName", officer.Name);
+
 
                 return RedirectToAction("Dashboard");
             }
@@ -104,9 +109,68 @@ namespace JanSamadhan.Controllers
             {
                 return RedirectToAction("Login");
             }
+            var issues = _issueRepo.GetAll();
+            return View(issues);
+        }
 
+        public IActionResult ComplaintDetails(int id)
+        {
+            var issue = _issueRepo.GetById(id);
+            if (issue == null)
+            {
+                return NotFound();
+            }
+            return View(issue);
+        }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            var officerId = HttpContext.Session.GetInt32("OfficerId");
+            if (officerId == null)
+            {
+                return RedirectToAction("Login");
+            }
             var officer = _mcpOfficerRepo.GetById(officerId.Value);
-            return View(officer);
+            if (officer == null) return NotFound();
+
+            var model = new UpdateMcpOfficerViewModel
+            {
+                Name = officer.Name,
+                Email = officer.Email,
+                PhoneNumber = officer.PhoneNumber,
+                Designation = officer.Designation
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateProfile(UpdateMcpOfficerViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var officerId = HttpContext.Session.GetInt32("OfficerId");
+                if (officerId == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var officer = _mcpOfficerRepo.GetById(officerId.Value);
+                if (officer == null) return NotFound();
+
+                officer.Name = model.Name;
+                officer.Email = model.Email;
+                officer.PhoneNumber = model.PhoneNumber;
+                officer.Designation = model.Designation;
+
+                _mcpOfficerRepo.Update(officer);
+
+                return RedirectToAction("Profile");
+            }
+
+            return View("Profile", model);
         }
     }
 }

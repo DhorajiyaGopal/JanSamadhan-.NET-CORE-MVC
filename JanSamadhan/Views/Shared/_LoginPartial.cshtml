@@ -20,19 +20,35 @@ else if (HttpContextAccessor.HttpContext.Session.GetInt32("OfficerId") != null)
         <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Dashboard">Officer Dashboard</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Profile">Profile</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Logout">Logout</a>
     </li>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Login</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Login">Officer Login</a>
-    </li>
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    if (controller == "McpOfficer")
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Register">Officer Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Login">Officer Login</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Login">Officer Login</a>
+        </li>
+    }
 }
 </ul>

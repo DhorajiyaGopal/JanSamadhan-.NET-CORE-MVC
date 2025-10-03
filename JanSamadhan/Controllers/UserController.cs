@@ -1,4 +1,5 @@
-﻿using JanSamadhan.Models;
+using JanSamadhan.Helpers;
+using JanSamadhan.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ namespace JanSamadhan.Controllers
     public class UserController : Controller
     {
         private readonly IUser _userRepo;
+        private readonly IIssue _issueRepo; // Add this line
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(IUser userRepo, IWebHostEnvironment webHostEnvironment)
+        public UserController(IUser userRepo, IIssue issueRepo, IWebHostEnvironment webHostEnvironment) // Modify this line
         {
             _userRepo = userRepo;
+            _issueRepo = issueRepo; // Add this line
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -32,137 +35,138 @@ namespace JanSamadhan.Controllers
             return View(user);
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateUserViewModel model)
+        public IActionResult Register(UserRegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                string uniqueFileName = null;
-
-                if (model.ProfilePicture != null)
+                if (_userRepo.GetByEmail(model.Email) != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProfilePicture.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        model.ProfilePicture.CopyTo(fileStream);
-                    }
+                    ModelState.AddModelError("Email", "Email is already in use.");
+                    return View(model);
                 }
+
+                PasswordHelper.CreatePasswordHash(model.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                 var user = new User
                 {
                     Name = model.Name,
                     Email = model.Email,
-                    Password = model.Password, // ⚠ hash in production
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
                     Address = model.Address,
-                    Phone = model.Phone,
-                    ProfilePictureUrl = uniqueFileName
+                    Phone = model.Phone
                 };
 
                 _userRepo.Add(user);
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Login");
             }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(UserLoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userRepo.GetByEmail(model.Email);
+                if (user == null || !PasswordHelper.VerifyPasswordHash(model.Password, user.PasswordHash, user.PasswordSalt))
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
+                return RedirectToAction("Dashboard");
+            }
+            return View(model);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult Dashboard()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var issues = _issueRepo.GetByUserId(userId.Value);
+            return View(issues);
+        }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = _userRepo.GetById(userId.Value);
+            if (user == null) return NotFound();
+
+            var model = new UpdateUserViewModel
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Address = user.Address,
+                Phone = user.Phone
+            };
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(UpdateUserViewModel model, IFormFile profilePicture)
+        public IActionResult UpdateProfile(UpdateUserViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            var user = _userRepo.GetById(model.Id);
-            if (user == null) return NotFound();
-
-            user.Name = model.Name;
-            user.Email = model.Email;
-            user.Phone = model.Phone;
-            user.Address = model.Address;
-
-            if (profilePicture != null)
+            if (ModelState.IsValid)
             {
-                // delete old file if exists
-                if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (userId == null)
                 {
-                    string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", user.ProfilePictureUrl);
-                    if (System.IO.File.Exists(oldFilePath))
-                    {
-                        System.IO.File.Delete(oldFilePath);
-                    }
+                    return RedirectToAction("Login");
                 }
 
-                // save new file
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+                var user = _userRepo.GetById(userId.Value);
+                if (user == null) return NotFound();
 
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + profilePicture.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                user.Name = model.Name;
+                user.Email = model.Email;
+                user.Address = model.Address;
+                user.Phone = model.Phone;
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    profilePicture.CopyTo(fileStream);
-                }
+                _userRepo.Update(user);
 
-                user.ProfilePictureUrl = uniqueFileName;
+                return RedirectToAction("Profile");
             }
 
-            _userRepo.Update(user);
-            return RedirectToAction(nameof(Index));
+            return View("Profile", model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(UpdateUserViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            var user = _userRepo.GetById(model.Id);
-            if (user == null) return NotFound();
-
-            user.Name = model.Name;
-            user.Email = model.Email;
-            user.Phone = model.Phone;
-            user.Address = model.Address;
-            user.ProfilePictureUrl = model.ProfilePictureUrl;
-
-            _userRepo.Update(user);
-            return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult Delete(int id)
-        {
-            var user = _userRepo.GetById(id);
-            if (user == null) return NotFound();
-
-            return View(user);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var user = _userRepo.GetById(id);
-            if (user == null) return NotFound();
-
-            _userRepo.Delete(id);
-            return RedirectToAction(nameof(Index));
-        }
+        // Existing Edit and Delete actions would go here, but will need to be secured.
     }
 }

@@ -1,4 +1,4 @@
-﻿using JanSamadhan.Data;
+using JanSamadhan.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,11 +49,6 @@ namespace JanSamadhan.Models
             }
         }
 
-        public bool ValidateOfficer(string email, string password)
-        {
-            var mcpOfficer = GetByEmail(email);
-            if (mcpOfficer == null) return false;
-            return mcpOfficer.Password == password;
-        }
+
     }
 }

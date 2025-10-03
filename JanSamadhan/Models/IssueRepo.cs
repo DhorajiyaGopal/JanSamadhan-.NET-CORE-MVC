@@ -1,4 +1,4 @@
-﻿using JanSamadhan.Data;
+using JanSamadhan.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;

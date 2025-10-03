@@ -1,11 +1,14 @@
-﻿using JanSamadhan.Models;
+using JanSamadhan.Filters;
+using JanSamadhan.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
 
 namespace JanSamadhan.Controllers
 {
+    [CustomAuth(UserType = "Officer")]
     public class ReplyController : Controller
     {
         private readonly IReply _replyRepo;
@@ -38,7 +41,6 @@ namespace JanSamadhan.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HttpPost]
         public IActionResult Create(CreateReplyViewModel model)
         {
             if (ModelState.IsValid)
@@ -61,7 +63,7 @@ namespace JanSamadhan.Controllers
                 Reply newReply = new Reply
                 {
                     Description = model.Description,
-                    McpOfficerId = model.McpOfficerId,
+                    McpOfficerId = (int)HttpContext.Session.GetInt32("OfficerId"),
                     IssueId = model.IssueId,
                     AttachImage = uniqueFileName
                 };

@@ -1,4 +1,5 @@
-﻿using JanSamadhan.Models;
+using JanSamadhan.Filters;
+using JanSamadhan.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.IO;
 
 namespace JanSamadhan.Controllers
 {
+    [CustomAuth(UserType = "User")]
     public class IssueController : Controller
     {
         private readonly IIssue _issueRepo;
@@ -21,7 +23,12 @@ namespace JanSamadhan.Controllers
         // GET: Issues
         public IActionResult Index()
         {
-            var issues = _issueRepo.GetAll();
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var issues = _issueRepo.GetByUserId(userId.Value);
             return View(issues);
         }
 
@@ -70,7 +77,7 @@ namespace JanSamadhan.Controllers
                     Description = model.Description,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    UserId = model.UserId,
+                    UserId = (int)HttpContext.Session.GetInt32("UserId"),
                     RelatedImageUrl = uniqueFileName
                 };
 
@@ -111,7 +118,6 @@ namespace JanSamadhan.Controllers
             issue.Title = model.Title;
             issue.Description = model.Description;
             issue.UpdatedAt = DateTime.UtcNow;
-            issue.UserId = model.UserId;
 
             if (model.RelatedImage != null)
             {

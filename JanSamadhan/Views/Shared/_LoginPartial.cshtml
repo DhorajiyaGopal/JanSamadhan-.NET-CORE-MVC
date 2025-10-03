@@ -1,0 +1,38 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<ul class="navbar-nav">
+@if (HttpContextAccessor.HttpContext.Session.GetInt32("UserId") != null)
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="User" asp-action="Dashboard">My Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="User" asp-action="Profile">Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="User" asp-action="Logout">Logout</a>
+    </li>
+}
+else if (HttpContextAccessor.HttpContext.Session.GetInt32("OfficerId") != null)
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Dashboard">Officer Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Logout">Logout</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Login</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="McpOfficer" asp-action="Login">Officer Login</a>
+    </li>
+}
+</ul>

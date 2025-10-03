@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,9 +17,8 @@ namespace JanSamadhan.Models
         [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(50, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long")]
-        public string Password { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
 
         [Required(ErrorMessage = "Address is required")]
         [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace JanSamadhan.Models
 {
@@ -10,6 +10,6 @@ namespace JanSamadhan.Models
         void Add(User user);
         void Update(User user);
         void Delete(int id);
-        bool ValidateUser(string email, string password);
+
     }
 }

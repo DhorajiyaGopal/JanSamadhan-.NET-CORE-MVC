@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using JanSamadhan.Models;
 namespace JanSamadhan.Data
 {

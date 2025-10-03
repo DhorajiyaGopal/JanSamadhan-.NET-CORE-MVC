@@ -17,7 +17,8 @@ namespace JanSamadhan.Migrations
                     Email = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(maxLength: 10, nullable: false),
                     Designation = table.Column<string>(nullable: true),
-                    Pasword = table.Column<string>(nullable: false)
+                    PasswordHash = table.Column<byte[]>(nullable: true),
+                    PasswordSalt = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -32,7 +33,8 @@ namespace JanSamadhan.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Email = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(maxLength: 50, nullable: false),
+                    PasswordHash = table.Column<byte[]>(nullable: true),
+                    PasswordSalt = table.Column<byte[]>(nullable: true),
                     Address = table.Column<string>(maxLength: 200, nullable: false),
                     Phone = table.Column<string>(nullable: false),
                     ProfilePictureUrl = table.Column<string>(nullable: true),

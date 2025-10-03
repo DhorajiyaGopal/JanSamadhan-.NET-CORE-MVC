@@ -1,4 +1,4 @@
-﻿using JanSamadhan.Data;
+using JanSamadhan.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,11 +50,6 @@ namespace JanSamadhan.Models
             }
         }
 
-        public bool ValidateUser(string email, string password)
-        {
-            var user = GetByEmail(email);
-            if (user == null) return false;
-            return user.Password == password;
-        }
+
     }
 }

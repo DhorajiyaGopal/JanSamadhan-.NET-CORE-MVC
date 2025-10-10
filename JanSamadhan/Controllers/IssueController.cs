@@ -20,7 +20,6 @@ namespace JanSamadhan.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: Issues
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -32,7 +31,6 @@ namespace JanSamadhan.Controllers
             return View(issues);
         }
 
-        // GET: Issues/Details/5
         public IActionResult Details(int id)
         {
             var issue = _issueRepo.GetById(id);
@@ -41,13 +39,11 @@ namespace JanSamadhan.Controllers
             return View(issue);
         }
 
-        // GET: Issues/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Issues/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateIssueViewModel model)
@@ -88,7 +84,6 @@ namespace JanSamadhan.Controllers
             return View(model);
         }
 
-        // GET: Issues/Edit/5
         public IActionResult Edit(int id)
         {
             var issue = _issueRepo.GetById(id);
@@ -105,7 +100,6 @@ namespace JanSamadhan.Controllers
             return View(model);
         }
 
-        // POST: Issues/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(UpdateIssueViewModel model)
@@ -121,7 +115,6 @@ namespace JanSamadhan.Controllers
 
             if (model.RelatedImage != null)
             {
-                // delete old image if exists
                 if (!string.IsNullOrEmpty(issue.RelatedImageUrl))
                 {
                     string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", issue.RelatedImageUrl);
@@ -129,7 +122,6 @@ namespace JanSamadhan.Controllers
                         System.IO.File.Delete(oldFilePath);
                 }
 
-                // save new image
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
                 if (!Directory.Exists(uploadsFolder))
                     Directory.CreateDirectory(uploadsFolder);
@@ -149,7 +141,6 @@ namespace JanSamadhan.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Issues/Delete/5
         public IActionResult Delete(int id)
         {
             var issue = _issueRepo.GetById(id);
@@ -158,7 +149,6 @@ namespace JanSamadhan.Controllers
             return View(issue);
         }
 
-        // POST: Issues/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

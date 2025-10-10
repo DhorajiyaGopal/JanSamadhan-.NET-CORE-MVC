@@ -51,7 +51,7 @@
     foreach (var reply in Model.Replies)
     {
         <div class="card mb-3">
-            <div class="card-body">
+            <div class="card-body reply-body">
                 <p class="card-text">@reply.Description</p>
                 @if (!string.IsNullOrEmpty(reply.AttachImage))
                 {

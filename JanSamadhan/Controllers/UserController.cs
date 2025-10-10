@@ -11,13 +11,13 @@ namespace JanSamadhan.Controllers
     public class UserController : Controller
     {
         private readonly IUser _userRepo;
-        private readonly IIssue _issueRepo; // Add this line
+        private readonly IIssue _issueRepo; 
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public UserController(IUser userRepo, IIssue issueRepo, IWebHostEnvironment webHostEnvironment) // Modify this line
         {
             _userRepo = userRepo;
-            _issueRepo = issueRepo; // Add this line
+            _issueRepo = issueRepo; 
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -169,6 +169,5 @@ namespace JanSamadhan.Controllers
             return View("Profile", model);
         }
 
-        // Existing Edit and Delete actions would go here, but will need to be secured.
     }
 }
